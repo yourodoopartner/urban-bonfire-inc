@@ -1,0 +1,196 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+  <record id="sale.action_report_saleorder" model="ir.actions.report" context="{'studio': True}">
+    <field name="attachment" eval="False"/>
+    <field name="attachment_use" eval="False"/>
+    <field name="binding_model_id" ref="sale.model_sale_order"/>
+    <field name="binding_type">report</field>
+    <field name="groups_id" eval="[(6, 0, [])]"/>
+    <field name="model">sale.order</field>
+    <field name="multi" eval="False"/>
+    <field name="name">Quotation </field>
+    <field name="report_name">sale.report_saleorder</field>
+    <field name="report_type">qweb-pdf</field>
+  </record>
+  <record id="studio_customization.quotation_order_02f4f49d-7822-4c42-9141-e97c3308edae" model="ir.actions.report" context="{'studio': True}">
+    <field name="attachment" eval="False"/>
+    <field name="attachment_use" eval="False"/>
+    <field name="binding_model_id" ref="sale.model_sale_order"/>
+    <field name="binding_type">report</field>
+    <field name="groups_id" eval="[(6, 0, [])]"/>
+    <field name="model">sale.order</field>
+    <field name="multi" eval="False"/>
+    <field name="name">Packing Slip</field>
+    <field name="report_name">sale.report_saleorder_copy_1</field>
+    <field name="report_type">qweb-pdf</field>
+  </record>
+  <record id="studio_customization.quotation_order_a7965115-b37e-43c3-9330-fa10a7a8db39" model="ir.actions.report" context="{'studio': True}">
+    <field name="attachment" eval="False"/>
+    <field name="attachment_use" eval="False"/>
+    <field name="binding_model_id" ref="sale.model_sale_order"/>
+    <field name="binding_type">report</field>
+    <field name="groups_id" eval="[(6, 0, [])]"/>
+    <field name="model">sale.order</field>
+    <field name="multi" eval="False"/>
+    <field name="name">Sales Order</field>
+    <field name="report_name">sale.report_saleorder_copy_2</field>
+    <field name="report_type">qweb-pdf</field>
+  </record>
+  <record id="studio_customization.request_for_quotatio_e6dafe39-29f2-4329-9726-301a856a99bd" model="ir.actions.report" context="{'studio': True}">
+    <field name="attachment" eval="False"/>
+    <field name="attachment_use" eval="False"/>
+    <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+    <field name="binding_type">report</field>
+    <field name="groups_id" eval="[(6, 0, [])]"/>
+    <field name="model">purchase.order</field>
+    <field name="multi" eval="False"/>
+    <field name="name">Picking list</field>
+    <field name="report_name">purchase.report_purchasequotation_copy_1</field>
+    <field name="report_type">qweb-pdf</field>
+  </record>
+  <record id="studio_customization.production_order_rep_03f473b2-941f-461a-8dca-9c5b5d44a489" model="ir.actions.report" context="{'studio': True}">
+    <field name="attachment" eval="False"/>
+    <field name="attachment_use" eval="False"/>
+    <field name="binding_model_id" ref="mrp.model_mrp_production"/>
+    <field name="binding_type">report</field>
+    <field name="groups_id" eval="[(6, 0, [])]"/>
+    <field name="model">mrp.production</field>
+    <field name="multi" eval="False"/>
+    <field name="name">Production BOM</field>
+    <field name="report_name">studio_customization.report_42513833-7f3c-4daa-8247-db3b0f522b22</field>
+    <field name="report_type">qweb-pdf</field>
+  </record>
+  <record id="studio_customization.quotation_1638b763-4da1-4ac5-af28-e496a494813f" model="ir.actions.report" context="{'studio': True}">
+    <field name="attachment" eval="False"/>
+    <field name="attachment_use" eval="False"/>
+    <field name="binding_model_id" ref="sale.model_sale_order"/>
+    <field name="binding_type">report</field>
+    <field name="groups_id" eval="[(6, 0, [])]"/>
+    <field name="model">sale.order</field>
+    <field name="multi" eval="False"/>
+    <field name="name">Commercial Invoice</field>
+    <field name="report_name">sale.report_saleorder_copy_3</field>
+    <field name="report_type">qweb-pdf</field>
+  </record>
+  <!--External ID not found in the system: stock.model_report_stock_forecast -> Check later -->
+  <!--record id="studio_customization.stock_forecast_repor_4c8625cd-5512-438a-9d2f-5139884e03c7" model="ir.actions.report" context="{'studio': True}">
+    <field name="attachment" eval="False"/>
+    <field name="attachment_use" eval="False"/>
+    <field name="binding_model_id" ref="stock.model_report_stock_forecast"/>
+    <field name="binding_type">report</field>
+    <field name="groups_id" eval="[(6, 0, [])]"/>
+    <field name="model">report.stock.forecast</field>
+    <field name="multi" eval="False"/>
+    <field name="name">Stock Forecast Report Report</field>
+    <field name="report_name">studio_customization.report_43c4dae8-74fd-4c11-94dd-e41fb24503da</field>
+    <field name="report_type">qweb-pdf</field>
+  </record-->
+  <record id="studio_customization.bom_structure_0cae2b25-c7ee-4900-98f8-a8870ee90227" model="ir.actions.report" context="{'studio': True}">
+    <field name="attachment" eval="False"/>
+    <field name="attachment_use" eval="False"/>
+    <field name="binding_model_id" ref="mrp.model_mrp_bom"/>
+    <field name="binding_type">report</field>
+    <field name="groups_id" eval="[(6, 0, [])]"/>
+    <field name="model">mrp.bom</field>
+    <field name="multi" eval="False"/>
+    <field name="name">BoM Structure copy(1)</field>
+    <field name="report_name">mrp.report_bom_structure_copy_1</field>
+    <field name="report_type">qweb-pdf</field>
+  </record>
+  <record id="studio_customization.lead_opportunity_rep_08b20a68-1acf-4565-a7d6-7b99c21b463a" model="ir.actions.report" context="{'studio': True}">
+    <field name="attachment" eval="False"/>
+    <field name="attachment_use" eval="False"/>
+    <field name="binding_model_id" ref="crm.model_crm_lead"/>
+    <field name="binding_type">report</field>
+    <field name="groups_id" eval="[(6, 0, [])]"/>
+    <field name="model">crm.lead</field>
+    <field name="multi" eval="False"/>
+    <field name="name">Lead/Opportunity Report</field>
+    <field name="report_name">studio_customization.studio_report_docume_ba00e315-5cde-464c-931d-7ed012edc56d</field>
+    <field name="report_type">qweb-pdf</field>
+  </record>
+  <record id="studio_customization.sales_order_539325de-a009-4345-94fb-b1bb02358238" model="ir.actions.report" context="{'studio': True}">
+    <field name="attachment" eval="False"/>
+    <field name="attachment_use" eval="False"/>
+    <field name="binding_model_id" ref="sale.model_sale_order"/>
+    <field name="binding_type">report</field>
+    <field name="groups_id" eval="[(6, 0, [])]"/>
+    <field name="model">sale.order</field>
+    <field name="multi" eval="False"/>
+    <field name="name">Net Pricing</field>
+    <field name="report_name">sale.report_saleorder_copy_2_copy_1</field>
+    <field name="report_type">qweb-pdf</field>
+  </record>
+  <record id="studio_customization.sales_order_354020f6-3a58-4f84-b130-a533c1082789" model="ir.actions.report" context="{'studio': True}">
+    <field name="attachment" eval="False"/>
+    <field name="attachment_use" eval="False"/>
+    <field name="binding_model_id" ref="sale.model_sale_order"/>
+    <field name="binding_type">report</field>
+    <field name="groups_id" eval="[(6, 0, [])]"/>
+    <field name="model">sale.order</field>
+    <field name="multi" eval="False"/>
+    <field name="name">Sales Order copy(2)</field>
+    <field name="report_name">sale.report_saleorder_copy_2_copy_2</field>
+    <field name="report_type">qweb-pdf</field>
+  </record>
+  <record id="studio_customization.request_for_quotatio_712a3270-44e6-4db6-a198-00cec2a5d440" model="ir.actions.report" context="{'studio': True}">
+    <field name="attachment" eval="False"/>
+    <field name="attachment_use" eval="False"/>
+    <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+    <field name="binding_type">report</field>
+    <field name="groups_id" eval="[(6, 0, [])]"/>
+    <field name="model">purchase.order</field>
+    <field name="multi" eval="False"/>
+    <field name="name">Request for Quotation</field>
+    <field name="report_name">purchase.report_purchasequotation_copy_2</field>
+    <field name="report_type">qweb-pdf</field>
+  </record>
+  <record id="studio_customization.purchase_order_2c173ed7-30ee-4a09-b99c-7544b35a41d1" model="ir.actions.report" context="{'studio': True}">
+    <field name="attachment" eval="False"/>
+    <field name="attachment_use" eval="False"/>
+    <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+    <field name="binding_type">report</field>
+    <field name="groups_id" eval="[(6, 0, [])]"/>
+    <field name="model">purchase.order</field>
+    <field name="multi" eval="False"/>
+    <field name="name">Purchase Order</field>
+    <field name="report_name">purchase.report_purchaseorder_copy_1</field>
+    <field name="report_type">qweb-pdf</field>
+  </record>
+  <record id="studio_customization.sales_order_8772e5f2-3140-4f3f-adc1-886b563df467" model="ir.actions.report" context="{'studio': True}">
+    <field name="attachment" eval="False"/>
+    <field name="attachment_use" eval="False"/>
+    <field name="binding_model_id" ref="sale.model_sale_order"/>
+    <field name="binding_type">report</field>
+    <field name="groups_id" eval="[(6, 0, [])]"/>
+    <field name="model">sale.order</field>
+    <field name="multi" eval="False"/>
+    <field name="name">Techo-Bloc-Sales Order </field>
+    <field name="report_name">sale.report_saleorder_copy_2_copy_3</field>
+    <field name="report_type">qweb-pdf</field>
+  </record>
+  <record id="studio_customization.packing_slip_566c6afa-146d-4672-9b0f-4bc363f7579d" model="ir.actions.report" context="{'studio': True}">
+    <field name="attachment" eval="False"/>
+    <field name="attachment_use" eval="False"/>
+    <field name="binding_model_id" ref="sale.model_sale_order"/>
+    <field name="binding_type">report</field>
+    <field name="groups_id" eval="[(6, 0, [])]"/>
+    <field name="model">sale.order</field>
+    <field name="multi" eval="False"/>
+    <field name="name">Techo-Bloc Release</field>
+    <field name="report_name">sale.report_saleorder_copy_1_copy_1</field>
+    <field name="report_type">qweb-pdf</field>
+  </record>
+  <record id="studio_customization.commercial_invoice_38aa50ce-4dd2-4d41-858f-cece08323012" model="ir.actions.report" context="{'studio': True}">
+    <field name="attachment" eval="False"/>
+    <field name="attachment_use" eval="False"/>
+    <field name="binding_model_id" ref="sale.model_sale_order"/>
+    <field name="binding_type">report</field>
+    <field name="groups_id" eval="[(6, 0, [])]"/>
+    <field name="model">sale.order</field>
+    <field name="multi" eval="False"/>
+    <field name="name">Techo-Commercial Invoice</field>
+    <field name="report_name">sale.report_saleorder_copy_3_copy_1</field>
+    <field name="report_type">qweb-pdf</field>
+  </record>
+</odoo>
