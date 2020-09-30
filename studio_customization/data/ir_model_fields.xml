@@ -224,7 +224,7 @@
     <field name="translate" eval="False"/>
     <field name="ttype">char</field>
   </record>
-  <record id="studio_customization.new_text_account_inv_5d3d3f72-2f05-46de-b046-f56511a40dad" model="ir.model.fields" context="{'studio': True}">
+  <!--record id="studio_customization.new_text_account_inv_5d3d3f72-2f05-46de-b046-f56511a40dad" model="ir.model.fields" context="{'studio': True}">
     <field name="complete_name" eval="False"/>
     <field name="compute" eval="False"/>
     <field name="copied" eval="False"/>
@@ -251,7 +251,7 @@
     <field name="store" eval="True"/>
     <field name="translate" eval="False"/>
     <field name="ttype">char</field>
-  </record>
+  </record-->
   <record id="studio_customization.new_text_account_move_5d3d3f72-2f05-46de-b046-f56511a40dad" model="ir.model.fields" context="{'studio': True}">
     <field name="complete_name" eval="False"/>
     <field name="compute" eval="False"/>
