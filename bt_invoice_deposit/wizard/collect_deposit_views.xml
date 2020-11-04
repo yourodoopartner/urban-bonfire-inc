@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<odoo>
+        
+	<record id="bt_collect_deposit_view_form" model="ir.ui.view">
+	    <field name="name">bt.collect.deposit.form</field>
+	    <field name="model">bt.collect.deposit</field>
+	    <field name="arch" type="xml">
+	        <form string="Deposits">
+	        	<group>
+		        	<field name="payment_date" invisible="0"/>
+		        	<field name="payment_amount" invisible="0"/>
+		        	<field name="journal_id" invisible="0"/>
+		        </group>
+	            <footer>
+	            	<button name="create_deposit" string="Confirm" type="object" class="btn-primary"/>
+	                <button string="Cancel" class="btn-secondary" special="cancel"/>
+	            </footer>
+	        </form>
+	    </field>
+	</record>
+	
+	<record id="bt_collect_deposit_action" model="ir.actions.act_window">
+	    <field name="name">Deposits</field>
+	    <field name="type">ir.actions.act_window</field>
+	    <field name="res_model">bt.collect.deposit</field>
+	    <field name="view_mode">form</field>
+	    <field name="view_id" ref="bt_collect_deposit_view_form"/>
+	    <field name="target">new</field>
+	</record>
+        
+</odoo>
