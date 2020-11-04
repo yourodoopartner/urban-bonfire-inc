@@ -14,12 +14,6 @@ class AccountMove(models.Model):
     deposit_amount = fields.Float('Deposit Amount', copy=False)
     
     
-#     def write(self, values):
-#         if not self.deposit_amount:
-#             print('wwwwwwwwwwwwwwwwwwwwwwww',self.deposit_amount,self.amount_total)
-#             values['deposit_amount'] = self.amount_total
-#         return super(AccountMove, self).write(values)
-    
     def deduct_deposit(self):
         for invoice_obj in self:
             deposit = self.env['bt.payment.deposit'].search([('invoice_id', '=', invoice_obj.id)])
