@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<odoo>
+
+		<record id="view_move_form_inherit_invoice_updation" model="ir.ui.view">
+            <field name="name">account.move.form.inherit.invoice.updation</field>
+            <field name="model">account.move</field>
+			<field name="inherit_id" ref="account.view_move_form"/>
+ 			<field name="arch" type="xml">
+ 				<xpath expr="//button[@name='button_draft']" position="after">
+ 					<button type="object" string="Update0" name="action_update_move_line_vals" invisible="1"/>
+ 					<button type="object" string="Update1" name="action_update_account_move_data" invisible="1"/>
+                    <button type="object" string="Update2" name="action_update_move_vals" invisible="1"/>
+                    <button type="object" string="Update3" name="action_update_missing_move_vals" invisible="1"/>
+                    <button type="object" string="Update4" name="action_check_function" invisible="1"/>
+                    <button type="object" string="Update5" name="action_update_move_line_sale_links" invisible="1"/>
+                    <button type="object" string="Update6" name="action_update_move_line_purchase_line_links" invisible="1"/>
+                    <button type="object" string="Update7" name="action_update_attachments_data" invisible="1"/>
+                    <button type="object" string="Update8" name="action_update_sale_invoice_links" invisible="1"/>
+ 				</xpath>
+ 			</field>
+ 		</record>
+
+
+</odoo>
