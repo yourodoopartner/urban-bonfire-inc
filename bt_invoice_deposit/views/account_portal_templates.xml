@@ -55,6 +55,83 @@
             </t>
         </xpath>
     </template>
+    
+    
+     <template id="portal_my_home_menu_draft_invoice" name="Portal layout : draft invoice menu entries" inherit_id="portal.portal_breadcrumbs" priority="31">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'daftinvoice'" t-attf-class="breadcrumb-item #{'active ' if not draftinvoice else ''}">
+                <a t-if="draftinvoice" t-attf-href="/my/draftinvoices?{{ keep_query() }}">Draft Invoices</a>
+                <t t-else="">Draft Invoices</t>
+            </li>
+            <li t-if="draftinvoice" class="breadcrumb-item active">
+                <t t-esc="draftinvoice.name" t-if="draftinvoice.name"/>
+                <t t-else=""><em>Draft Invoice</em></t>
+            </li>
+        </xpath>
+    </template>
+    
+    <template id="portal_my_home_draft_invoice" name="Portal My Home : draft invoice entries" inherit_id="portal.portal_my_home" priority="31">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-if="draftinvoice_count" t-call="portal.portal_docs_entry">
+                <t t-set="title">Draft Invoices</t>
+                <t t-set="url" t-value="'/my/draftinvoices'"/>
+                <t t-set="count" t-value="draftinvoice_count"/>
+            </t>
+        </xpath>
+    </template>
+    
+    <template id="portal_my_draftinvoices" name="Draft Invoices">
+      <t t-call="portal.portal_layout">
+        <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+        <t t-call="portal.portal_searchbar">
+            <t t-set="title">Draft Invoices</t>
+        </t>
+        <t t-if="not invoices">
+            <p>There are currently no draft invoices for your account.</p>
+        </t>
+        <t t-if="invoices" t-call="portal.portal_table">
+            <thead>
+                <tr class="active">
+                    <th>Invoice #</th>
+                    <th>Invoice Date</th>
+                    <th class='d-none d-md-table-cell'>Due Date</th>
+                    <th/>
+                    <th class="text-right">Amount Due</th>
+                </tr>
+            </thead>
+            <tbody>
+                <t t-foreach="invoices" t-as="invoice">
+                    <tr>
+                        <td>
+                            <a t-att-href="invoice.get_portal_url()" t-att-title="invoice.name">
+                                <t t-esc="invoice.name" t-if="invoice.name"/>
+                                <em t-else="">Draft Invoice</em>
+                            </a>
+                        </td>
+                        <td><span t-field="invoice.invoice_date"/></td>
+                        <td class='d-none d-md-table-cell'><span t-field="invoice.invoice_date_due"/></td>
+                        <td class="tx_status">
+                        	<t t-if="invoice.deposit_exist">
+				                <span class="badge badge-pill badge-primary"><i class="fa fa-fw fa-check"/><span class="d-none d-md-inline"> Deposit Received</span></span>
+				            </t>
+                            <t t-if="invoice.state == 'open'">
+                                <span class="badge badge-pill badge-info"><i class="fa fa-fw fa-clock-o" aria-label="Opened" title="Opened" role="img"></i><span class="d-none d-md-inline"> Waiting for Payment</span></span>
+                            </t>
+                            <t t-if="invoice.state == 'paid'">
+                                <span class="badge badge-pill badge-success"><i class="fa fa-fw fa-check" aria-label="Paid" title="Paid" role="img"></i><span class="d-none d-md-inline"> Paid</span></span>
+                            </t>
+                            <t t-if="invoice.state == 'cancel'">
+                                <span class="badge badge-pill badge-warning"><i class="fa fa-fw fa-remove" aria-label="Cancelled" title="Cancelled" role="img"></i><span class="d-none d-md-inline"> Cancelled</span></span>
+                            </t>
+                        </td>
+                        <td class="text-right"><span t-esc="-invoice.amount_residual if invoice.type == 'out_refund' else invoice.amount_residual" t-options='{"widget": "monetary", "display_currency": invoice.currency_id}'/></td>
+                    </tr>
+                </t>
+            </tbody>
+        </t>
+      </t>
+    </template>
 
 
 </odoo>

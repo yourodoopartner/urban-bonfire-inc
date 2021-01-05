@@ -11,9 +11,16 @@
 	        		<field name="deposit_exist" invisible="1"/>
 	        	</xpath>
 	        	<xpath expr="//field[@name='amount_total']" position='after'>
-	        		<field name="deposit_amount" invisible="0"/>
+	        		<field name="deposit_amount" invisible="0" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+	        		<field name="deposit_amount_collected" invisible="0" readonly="1"/>
+	        		<field name="inv_balance_owed" invisible="0" readonly="1"/>
 	        	</xpath>
 	            <xpath expr="//button[@name='button_draft']" position='after'>
+	            	<button name="action_draft_invoice_sent"
+                        type="object"
+                        string="Send &amp; Print"
+                        attrs="{'invisible':['|', ('state', '!=', 'draft'), ('type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund'))]}"
+                        groups="base.group_user"/>
 		    		<button id="bt_collect_deposit_btn" name="%(bt_collect_deposit_action)d" string="Collect Deposit" 
 		    			type="action"
 		    			class="oe_highlight"
