@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_bt_payment_deposit_tree" model="ir.ui.view">
+            <field name="name">bt.payment.deposit.tree</field>
+            <field name="model">bt.payment.deposit</field>
+            <field name="arch" type="xml">
+                <tree string="Deposits" create="false" edit="false">
+                    <field name="name"/>
+                    <field name="partner_id" invisible="0"/>
+		        	<field name="invoice_id" invisible="0"/>
+                    <field name="payment_date"/>
+		        	<field name="payment_amount" invisible="0"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_bt_payment_deposit_search" model="ir.ui.view">
+            <field name="name">bt.payment.deposit.search</field>
+            <field name="model">bt.payment.deposit</field>
+            <field name="arch" type="xml">
+                <search string="Deposits">
+                    <field name="name" string="Payment"
+                        filter_domain="['|', ('name', 'ilike', self), ('partner_id', 'ilike', self)]"/>
+                    <field name="partner_id" string="Customer"/>
+                    <separator/>
+                    <filter string="Payment Date" name="payment_date" date="payment_date"/>
+                    <separator/>
+                    <filter string="Customer" name="partner" domain="[]" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Payment Date" name="groupby_payment_date" domain="[]" context="{'group_by': 'payment_date'}"/>
+                    <separator/>
+                </search>
+            </field>
+        </record>
+
+        <record id="view_bt_payment_deposit_form" model="ir.ui.view">
+            <field name="name">bt.payment.deposit.form</field>
+            <field name="model">bt.payment.deposit</field>
+            <field name="arch" type="xml">
+                <form string="Deposits" create="false" edit="false">
+                    <sheet>
+                        <field name="id" invisible="1"/>
+                        <div class="oe_title" >
+                            <h1><field name="name" readonly="1"/></h1>
+                        </div>
+                        <group>
+                            <group name="partner_group" >
+                                <field name="partner_id"/>
+                                <field name="invoice_id"/>
+                                <field name="payment_date"/>
+                                <field name="payment_amount"/>
+                                <field name="payment_id"/>
+                                <field name="move_id" invisible="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    
+                </form>
+            </field>
+        </record>
+
+        <record id="action_bt_payment_deposit" model="ir.actions.act_window">
+            <field name="name">Deposits</field>
+            <field name="res_model">bt.payment.deposit</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_bt_payment_deposit_tree"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                  Register Deposits
+                </p>
+            </field>
+        </record>
+	
+
+        <menuitem action="action_bt_payment_deposit" id="menu_action_bt_payment_deposit" 
+	         groups="account.group_account_user,account.group_account_manager,account.group_account_invoice"
+	         parent="account.menu_finance_receivables" sequence="150"/>
+
+
+    </data>
+</odoo>

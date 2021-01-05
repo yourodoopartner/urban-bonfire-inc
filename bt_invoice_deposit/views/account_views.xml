@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+		<record id="bt_account_move_form_inherit" model="ir.ui.view">
+	        <field name="name">bt.account.move.form.inherit</field>
+	        <field name="model">account.move</field>
+	        <field name="inherit_id" ref="account.view_move_form"/>
+	        <field name="arch" type="xml">
+	        	<xpath expr="//field[@name='ref']" position='after'>
+	        		<field name="deposit_exist" invisible="1"/>
+	        	</xpath>
+	        	<xpath expr="//field[@name='amount_total']" position='after'>
+	        		<field name="deposit_amount" invisible="0"/>
+	        	</xpath>
+	            <xpath expr="//button[@name='button_draft']" position='after'>
+		    		<button id="bt_collect_deposit_btn" name="%(bt_collect_deposit_action)d" string="Collect Deposit" 
+		    			type="action"
+		    			class="oe_highlight"
+                        attrs="{'invisible': ['|', '|', ('state', '!=', 'draft'), ('deposit_exist', '=', True), ('type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt'))]}"
+		                />
+		            <button id="deduct_deposit_btn" name="deduct_deposit" string="Deduct Advance" 
+                        attrs="{'invisible': ['|', '|', '|', ('state', '!=', 'posted'), ('deposit_exist', '!=', True), ('invoice_payment_state', '!=', 'not_paid'), ('type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt'))]}"
+		            	type="object" class="oe_highlight"/>
+	            </xpath>
+	        </field>
+	    </record>
+	    
+	    <record id="transaction_form_inherit" model="ir.ui.view">
+	        <field name="name">payment.transaction.form.inherit</field>
+	        <field name="model">payment.transaction</field>
+	        <field name="inherit_id" ref="payment.transaction_form"/>
+	        <field name="arch" type="xml">
+	            <!--xpath expr="//button[@name='action_void']" position='after'>
+		    		<button  id="test_trans" type="object" name="test_trans" string="Test Transaction"/>
+	            </xpath-->
+	            <xpath expr="//field[@name='payment_id']" position='after'>
+		    		<field name="invoice_deposit" invisible="1"/>
+	            </xpath>
+	        </field>
+	    </record>
+
+    </data>
+</odoo>
