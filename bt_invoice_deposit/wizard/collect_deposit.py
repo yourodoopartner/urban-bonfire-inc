@@ -59,6 +59,8 @@ class CollectDeposit(models.TransientModel):
             deposit.payment_id = payment_obj.id
             deposit.move_id = payment_obj.move_line_ids[0].move_id.id
             invoice_obj.deposit_exist = True
+            invoice_obj.deposit_amount_collected = self.payment_amount
+            invoice_obj.inv_balance_owed = invoice_obj.amount_total - self.payment_amount
 
         return True
     

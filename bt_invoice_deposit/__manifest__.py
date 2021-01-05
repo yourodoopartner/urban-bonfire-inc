@@ -13,6 +13,7 @@ This module is for invoice deposit management.
     'data': [
         'security/ir.model.access.csv',
         'wizard/collect_deposit_views.xml',
+        'views/mail_template_data.xml',
         'views/account_data.xml',
         'views/payment_deposit_view.xml',
         'views/account_views.xml',
