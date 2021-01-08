@@ -33,6 +33,10 @@
     
     <template id="portal_make_deposit" name="Make Deposit" inherit_id="account_payment.portal_invoice_page_inherit_payment">
         <xpath expr="//div/a[@data-target='#pay_with']" position="before">
+        	<t t-if="invoice.state == 'draft' and invoice.invoice_payment_state == 'not_paid' and invoice.deposit_amount and not invoice.deposit_exist and invoice.type == 'out_invoice'">
+        		<b> Deposit Amount: <t t-esc="'%.2f' % (invoice.deposit_amount)"/> </b>
+        	</t>
+        	<br/>
             <a href="#" t-if="invoice.state == 'draft' and invoice.invoice_payment_state == 'not_paid' and invoice.deposit_amount and not invoice.deposit_exist and invoice.type == 'out_invoice' and (pending_manual_txs or not tx_ids)"
                 class="btn btn-primary btn-block mb-2" data-toggle="modal" data-target="#pay_with_deposit">
                 <i class="fa fa-fw fa-arrow-circle-right"/> Make Deposit

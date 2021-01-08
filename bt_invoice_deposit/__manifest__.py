@@ -18,6 +18,7 @@ This module is for invoice deposit management.
         'views/payment_deposit_view.xml',
         'views/account_views.xml',
         'views/account_portal_templates.xml',
+        'views/report_invoice.xml',
     ],
     'application': False,
     'license': 'OPL-1',

@@ -14,7 +14,6 @@ from odoo.addons.http_routing.models.ir_http import slug
 class AccountMove(models.Model):
     _inherit = "account.move"
 
-
     deposit_exist = fields.Boolean('Deposit Exists', copy=False)
     deposit_amount = fields.Float('Deposit Amount (Expected)', copy=False)
     deposit_amount_collected = fields.Float('Deposit Amount (Collected)', copy=False)
@@ -24,20 +23,90 @@ class AccountMove(models.Model):
     portal_url = fields.Char('Draft Portal URL')
     
     
-#     def write(self, values):
-#         if not self.deposit_amount:
-#             print('wwwwwwwwwwwwwwwwwwwwwwww',self.deposit_amount,self.amount_total)
-#             values['deposit_amount'] = self.amount_total
-#         return super(AccountMove, self).write(values)
+    @api.model
+    def create(self, values):
+        if 'deposit_amount' not in values:
+            values['deposit_amount'] = self.amount_total/2
+        return super(AccountMove, self).create(values)
+    
+    def write(self, values):
+        if self.state == 'draft' and not self.deposit_amount and 'deposit_amount' not in values:
+            values['deposit_amount'] = self.amount_total/2
+        return super(AccountMove, self).write(values)
     
     def deduct_deposit(self):
         for invoice_obj in self:
             deposit = self.env['bt.payment.deposit'].search([('invoice_id', '=', invoice_obj.id)])
-            if deposit:
-                (deposit.move_id + invoice_obj).line_ids \
-                    .filtered(lambda line: not line.reconciled and line.account_id == deposit.payment_id.destination_account_id) \
-                    .reconcile()
-            invoice_obj.deposit_exist = False
+            
+            deposit_journal = self.env['bt.deposit.journal'].search([])
+            if deposit and deposit_journal and deposit_journal[0].journal_id.default_debit_account_id and invoice_obj.partner_id and invoice_obj.partner_id.property_account_receivable_id:
+                payment_vals = {
+                    'company_id': invoice_obj.company_id and invoice_obj.company_id.id or False,
+                    'partner_id': invoice_obj.partner_id and invoice_obj.partner_id.id or False,
+                    'amount': deposit.payment_amount,
+                    'currency_id': invoice_obj.currency_id.id,
+                    'journal_id': deposit_journal[0].journal_id.id,
+                    'communication': 'Deposit: ' + invoice_obj.name,
+                    'payment_date': fields.Date.today(),
+                    'payment_type': 'inbound',
+                    'partner_type': 'customer',
+                    'payment_method_id': deposit_journal[0].journal_id.inbound_payment_method_ids and deposit_journal[0].journal_id.inbound_payment_method_ids[0].id or False
+                    }
+                payment = self.env['account.payment']\
+                        .with_context(active_ids=[deposit.id], active_model='bt.payment.deposit', active_id=deposit.id)\
+                        .create(payment_vals)
+                        
+                if not payment.name:
+                    sequence_code = 'account.payment.customer.invoice'
+                    payment.name = self.env['ir.sequence'].next_by_code(sequence_code, sequence_date=payment.payment_date)
+
+                move_vals = {
+                    'date': fields.Date.today(),
+                    'ref': 'Deposit: ' + invoice_obj.name,
+                    'journal_id': deposit_journal[0].journal_id.id,
+                    'currency_id': invoice_obj.currency_id and invoice_obj.currency_id.id or False,
+                    'partner_id': invoice_obj.partner_id and invoice_obj.partner_id.id or False,
+                    'type': 'entry',
+                    'line_ids': [
+                        (0, 0, {
+                            'name': 'Deposit',
+    #                         'amount_currency': counterpart_amount + write_off_amount if currency_id else 0.0,
+#                             'currency_id': invoice_obj.currency_id and invoice_obj.currency_id.id or False,
+                            'debit': 0.0,
+                            'credit': deposit.payment_amount,
+                            'date_maturity': fields.Date.today(),
+                            'partner_id': invoice_obj.partner_id and invoice_obj.partner_id.id or False,
+                            'account_id': invoice_obj.partner_id.property_account_receivable_id.id, #### customer account receivable
+                            'payment_id': payment.id,
+                        }),
+                        (0, 0, {
+                            'name': 'Deposit',
+    #                         'amount_currency': -liquidity_amount if liquidity_line_currency_id else 0.0,
+#                             'currency_id': invoice_obj.currency_id and invoice_obj.currency_id.id or False,
+                            'debit': deposit.payment_amount,
+                            'credit': 0.0,
+                            'date_maturity': fields.Date.today(),
+                            'partner_id': invoice_obj.partner_id and invoice_obj.partner_id.id or False,
+                            'account_id': deposit_journal[0].journal_id.default_debit_account_id.id,  #### customer deposit
+                            'payment_id': payment.id,
+                        }),
+                    ],
+                }
+                
+                moves = self.env['account.move'].create(move_vals)
+                moves.post()
+                move_name = moves.name
+                payment.write({'state': 'posted', 'move_name': move_name})
+                deposit.payment_id = payment.id
+                
+                (deposit.move_id + moves).line_ids \
+                        .filtered(lambda line: not line.reconciled and line.account_id == deposit_journal[0].journal_id.default_debit_account_id) \
+                        .reconcile()
+                (invoice_obj + moves).line_ids \
+                        .filtered(lambda line: not line.reconciled and line.account_id == invoice_obj.partner_id.property_account_receivable_id) \
+                        .reconcile()
+                invoice_obj.deposit_exist = False
+                invoice_obj.message_post(body=_("Customer Advance Deducted"))
             return True
         
     def action_draft_invoice_sent(self):
@@ -143,4 +212,13 @@ class AccountMove(models.Model):
             transaction.s2s_do_transaction()
 
         return transaction
+    
+    
+    ### For inv pdf
+    def _get_payment_ref(self, account_payment_id):
+        self.ensure_one()
+        name = account_payment_id and self.env['account.payment'].browse(account_payment_id).name or ''
+        return name or ''
+    
+    
   

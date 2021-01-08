@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    
+        <template id="bt_deposit_invoice_document" inherit_id="account.report_invoice_document">
+            <xpath expr="//tr[@class='border-black o_total']" position="after">
+            	<t t-if="o.type == 'out_invoice' and o.state == 'draft'">
+	            	<tr>
+	            		<td>Expected Deposit Amount</td>
+	                    <td class="text-right">
+	                         <span t-field="o.deposit_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+	                    </td>
+	            	</tr>
+	            </t>
+            </xpath>
+            <xpath expr="//div[@class='page']/h2/span[2]" position="replace">
+            	<span t-if="o.type == 'out_invoice' and o.state == 'draft'">Pro-Forma Invoice # <span t-field="o.invoice_origin"/></span>
+            </xpath>
+        </template>
+        
+        
+        <template id="bt_deposit_report_invoice_document_with_payments" inherit_id="account.report_invoice_document_with_payments">
+            <xpath expr="//t[@t-foreach='payments_vals']/tr/td/i[@class='oe_form_field text-right oe_payment_label']" position="replace">
+            	<t t-if="o.invoice_payment_state == 'not_paid' and o.state == 'posted'">
+            		<i class="oe_form_field text-right oe_payment_label"><t t-esc="o._get_payment_ref(payment_vals['account_payment_id'])"/></i>
+            	</t>
+            	<t t-if="o.invoice_payment_state != 'not_paid' and o.state == 'posted'">
+            		<i class="oe_form_field text-right oe_payment_label">Paid on <t t-esc="payment_vals['date']" t-options='{"widget": "date"}'/></i>
+            	</t>
+            </xpath>
+        </template>
+        
+    </data>
+</odoo>
