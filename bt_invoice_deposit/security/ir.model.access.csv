@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_bt_payment_deposit,bt.payment.deposit,model_bt_payment_deposit,,1,1,1,1
+access_bt_deposit_journal,bt.deposit.journal,model_bt_deposit_journal,,1,1,1,1
