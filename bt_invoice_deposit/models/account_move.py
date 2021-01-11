@@ -40,25 +40,25 @@ class AccountMove(models.Model):
             
             deposit_journal = self.env['bt.deposit.journal'].search([])
             if deposit and deposit_journal and deposit_journal[0].journal_id.default_debit_account_id and invoice_obj.partner_id and invoice_obj.partner_id.property_account_receivable_id:
-                payment_vals = {
-                    'company_id': invoice_obj.company_id and invoice_obj.company_id.id or False,
-                    'partner_id': invoice_obj.partner_id and invoice_obj.partner_id.id or False,
-                    'amount': deposit.payment_amount,
-                    'currency_id': invoice_obj.currency_id.id,
-                    'journal_id': deposit_journal[0].journal_id.id,
-                    'communication': 'Deposit: ' + invoice_obj.name,
-                    'payment_date': fields.Date.today(),
-                    'payment_type': 'inbound',
-                    'partner_type': 'customer',
-                    'payment_method_id': deposit_journal[0].journal_id.inbound_payment_method_ids and deposit_journal[0].journal_id.inbound_payment_method_ids[0].id or False
-                    }
-                payment = self.env['account.payment']\
-                        .with_context(active_ids=[deposit.id], active_model='bt.payment.deposit', active_id=deposit.id)\
-                        .create(payment_vals)
-                        
-                if not payment.name:
-                    sequence_code = 'account.payment.customer.invoice'
-                    payment.name = self.env['ir.sequence'].next_by_code(sequence_code, sequence_date=payment.payment_date)
+#                 payment_vals = {
+#                     'company_id': invoice_obj.company_id and invoice_obj.company_id.id or False,
+#                     'partner_id': invoice_obj.partner_id and invoice_obj.partner_id.id or False,
+#                     'amount': deposit.payment_amount,
+#                     'currency_id': invoice_obj.currency_id.id,
+#                     'journal_id': deposit_journal[0].journal_id.id,
+#                     'communication': 'Deposit: ' + invoice_obj.name,
+#                     'payment_date': fields.Date.today(),
+#                     'payment_type': 'inbound',
+#                     'partner_type': 'customer',
+#                     'payment_method_id': deposit_journal[0].journal_id.inbound_payment_method_ids and deposit_journal[0].journal_id.inbound_payment_method_ids[0].id or False
+#                     }
+#                 payment = self.env['account.payment']\
+#                         .with_context(active_ids=[deposit.id], active_model='bt.payment.deposit', active_id=deposit.id)\
+#                         .create(payment_vals)
+#                         
+#                 if not payment.name:
+#                     sequence_code = 'account.payment.customer.invoice'
+#                     payment.name = self.env['ir.sequence'].next_by_code(sequence_code, sequence_date=payment.payment_date)
 
                 move_vals = {
                     'date': fields.Date.today(),
@@ -69,7 +69,7 @@ class AccountMove(models.Model):
                     'type': 'entry',
                     'line_ids': [
                         (0, 0, {
-                            'name': 'Deposit',
+                            'name': invoice_obj.name,
     #                         'amount_currency': counterpart_amount + write_off_amount if currency_id else 0.0,
 #                             'currency_id': invoice_obj.currency_id and invoice_obj.currency_id.id or False,
                             'debit': 0.0,
@@ -77,7 +77,6 @@ class AccountMove(models.Model):
                             'date_maturity': fields.Date.today(),
                             'partner_id': invoice_obj.partner_id and invoice_obj.partner_id.id or False,
                             'account_id': invoice_obj.partner_id.property_account_receivable_id.id, #### customer account receivable
-                            'payment_id': payment.id,
                         }),
                         (0, 0, {
                             'name': 'Deposit',
@@ -88,16 +87,13 @@ class AccountMove(models.Model):
                             'date_maturity': fields.Date.today(),
                             'partner_id': invoice_obj.partner_id and invoice_obj.partner_id.id or False,
                             'account_id': deposit_journal[0].journal_id.default_debit_account_id.id,  #### customer deposit
-                            'payment_id': payment.id,
                         }),
                     ],
                 }
                 
                 moves = self.env['account.move'].create(move_vals)
                 moves.post()
-                move_name = moves.name
-                payment.write({'state': 'posted', 'move_name': move_name})
-                deposit.payment_id = payment.id
+                deposit.deduct_move_id = moves.id
                 
                 (deposit.move_id + moves).line_ids \
                         .filtered(lambda line: not line.reconciled and line.account_id == deposit_journal[0].journal_id.default_debit_account_id) \

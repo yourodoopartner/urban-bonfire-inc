@@ -51,7 +51,8 @@
                                 <field name="payment_date"/>
                                 <field name="payment_amount"/>
                                 <field name="payment_id" invisible="0"/>
-                                <field name="move_id" invisible="0"/>
+                                <field name="move_id" invisible="1"/>
+                                <field name="deduct_move_id" invisible="0"/>
                             </group>
                         </group>
                     </sheet>

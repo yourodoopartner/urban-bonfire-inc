@@ -32,8 +32,8 @@ class CollectDeposit(models.TransientModel):
             deposit_journal = self.env['bt.deposit.journal'].search([])
             if not deposit_journal:
                 raise ValidationError(_('Please configure deposit journal'))
+            
             if deposit_journal and deposit_journal[0].journal_id.default_credit_account_id and self.journal_id.default_debit_account_id:
-                
                 name = self.env['ir.sequence'].next_by_code('payment.deposit', sequence_date=self.payment_date)
                 vals = {
                     'name': name,
@@ -44,26 +44,28 @@ class CollectDeposit(models.TransientModel):
                     }
                 deposit = self.env['bt.payment.deposit'].create(vals)
                 
-    #             payment_vals = {
-    #                 'company_id': invoice_obj.company_id and invoice_obj.company_id.id or False,
-    #                 'partner_id': invoice_obj.partner_id and invoice_obj.partner_id.id or False,
-    #                 'amount': self.payment_amount,
-    #                 'currency_id': invoice_obj.currency_id.id,
-    #                 'journal_id': self.journal_id.id,
-    #                 'communication': invoice_obj.partner_id and 'Deposit: ' + invoice_obj.partner_id.name or 'Deposit',
-    #                 'payment_date': self.payment_date,
-    #                 'payment_type': 'inbound',
-    #                 'partner_type': 'customer',
-    #                 'payment_method_id': self.journal_id.inbound_payment_method_ids and self.journal_id.inbound_payment_method_ids[0].id or False
-    #                 }
-    #             payment_obj = self.env['account.payment']\
-    #                     .with_context(active_ids=[deposit.id], active_model='bt.payment.deposit', active_id=deposit.id)\
-    #                     .create(payment_vals)
-    #             payment_obj.post()
+                payment_vals = {
+                    'company_id': invoice_obj.company_id and invoice_obj.company_id.id or False,
+                    'partner_id': invoice_obj.partner_id and invoice_obj.partner_id.id or False,
+                    'amount': self.payment_amount,
+                    'currency_id': invoice_obj.currency_id.id,
+                    'journal_id': self.journal_id.id,
+                    'communication': 'Deposit: '+deposit.name or 'Deposit',
+                    'payment_date': self.payment_date,
+                    'payment_type': 'inbound',
+                    'partner_type': 'customer',
+                    'payment_method_id': self.journal_id.inbound_payment_method_ids and self.journal_id.inbound_payment_method_ids[0].id or False
+                    }
+                payment = self.env['account.payment']\
+                        .with_context(active_ids=[deposit.id], active_model='bt.payment.deposit', active_id=deposit.id)\
+                        .create(payment_vals)
+                if not payment.name:
+                    sequence_code = 'account.payment.customer.invoice'
+                    payment.name = self.env['ir.sequence'].next_by_code(sequence_code, sequence_date=payment.payment_date)
     
                 move_vals = {
                     'date': self.payment_date,
-                    'ref': 'Deposit: ' + invoice_obj.name,
+                    'ref': 'Deposit: ' + payment.name or 'Deposit',
                     'journal_id': self.journal_id.id,
                     'currency_id': invoice_obj.currency_id and invoice_obj.currency_id.id or False,
                     'partner_id': invoice_obj.partner_id and invoice_obj.partner_id.id or False,
@@ -77,10 +79,10 @@ class CollectDeposit(models.TransientModel):
                             'date_maturity': self.payment_date,
                             'partner_id': invoice_obj.partner_id and invoice_obj.partner_id.id or False,
                             'account_id': deposit_journal[0].journal_id.default_credit_account_id.id,  #### customer deposit
-    #                         'payment_id': payment.id,
+                            'payment_id': payment.id,
                         }),
                         (0, 0, {
-                            'name': 'Deposit',
+                            'name': payment.name,
 #                             'amount_currency': self.payment_amount,
 #                             'currency_id': invoice_obj.currency_id and invoice_obj.currency_id.id or False,
                             'debit': self.payment_amount,
@@ -88,16 +90,18 @@ class CollectDeposit(models.TransientModel):
                             'date_maturity': self.payment_date,
                             'partner_id': invoice_obj.partner_id and invoice_obj.partner_id.id or False,
                             'account_id': self.journal_id.default_debit_account_id.id,
-    #                         'payment_id': payment.id,
+                            'payment_id': payment.id,
                         }),
                     ],
                 }
-                
                 moves = self.env['account.move'].create(move_vals)
                 moves.post()
+                move_name = moves.name
+                payment.write({'state': 'posted', 'move_name': move_name})
                 
-    #             deposit.payment_id = payment_obj.id
+                deposit.payment_id = payment.id
                 deposit.move_id = moves.id
+                
                 invoice_obj.deposit_exist = True
                 invoice_obj.deposit_amount_collected = self.payment_amount
                 invoice_obj.inv_balance_owed = invoice_obj.amount_total - self.payment_amount
