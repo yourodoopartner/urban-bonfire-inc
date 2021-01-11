@@ -77,6 +77,7 @@ class AccountMove(models.Model):
                             'date_maturity': fields.Date.today(),
                             'partner_id': invoice_obj.partner_id and invoice_obj.partner_id.id or False,
                             'account_id': invoice_obj.partner_id.property_account_receivable_id.id, #### customer account receivable
+                        
                         }),
                         (0, 0, {
                             'name': 'Deposit',
@@ -213,8 +214,12 @@ class AccountMove(models.Model):
     ### For inv pdf
     def _get_payment_ref(self, account_payment_id):
         self.ensure_one()
-        name = account_payment_id and self.env['account.payment'].browse(account_payment_id).name or ''
-        return name or ''
-    
+        if account_payment_id:
+            name = account_payment_id and self.env['account.payment'].browse(account_payment_id).name or ''
+            return name or ''
+        
+        deposit = self.env['bt.payment.deposit'].search([('invoice_id', '=', self.id)])
+        if deposit:
+            return deposit.payment_id and deposit.payment_id.name or ''
     
   
