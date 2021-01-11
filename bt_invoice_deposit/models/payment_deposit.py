@@ -15,7 +15,8 @@ class PaymentDeposit(models.Model):
     payment_date = fields.Date('Payment Date')
     payment_amount = fields.Float('Payment Amount')
     payment_id = fields.Many2one('account.payment', 'Customer Payment Ref', copy=False)
-    move_id = fields.Many2one('account.move', 'Deposit collect Move', copy=False)
+    move_id = fields.Many2one('account.move', 'Deposit Collect Move', copy=False)
+    deduct_move_id = fields.Many2one('account.move', 'Deposit Deduct Move', copy=False)
     
         
 class DepositJournal(models.Model):
